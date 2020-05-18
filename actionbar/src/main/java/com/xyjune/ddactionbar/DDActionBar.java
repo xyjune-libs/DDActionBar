@@ -80,6 +80,9 @@ public class DDActionBar extends BaseActionBar {
         leftIconParams.width = leftIconWidth;
         leftIconParams.height = leftIconHeight;
         mLeftImg.setLayoutParams(leftIconParams);
+        int leftIconColor = typedArray.getColor(R.styleable.DDActionBar_leftIconTint, -1);
+        if (leftIconColor != -1)
+            mLeftImg.setColorFilter(leftIconColor);
 
         String rightText = typedArray.getString(R.styleable.DDActionBar_rightText);
         if (!TextUtils.isEmpty(rightText))
@@ -98,6 +101,9 @@ public class DDActionBar extends BaseActionBar {
         rightIconParams.width = rightIconWidth;
         rightIconParams.height = rightIconHeight;
         mRightImg.setLayoutParams(rightIconParams);
+        int rightIconColor = typedArray.getColor(R.styleable.DDActionBar_rightIconTint, -1);
+        if (rightIconColor != -1)
+            mLeftImg.setColorFilter(rightIconColor);
 
         typedArray.recycle();
     }
@@ -193,6 +199,44 @@ public class DDActionBar extends BaseActionBar {
         }
     }
 
+    public void setLeftTextColor(int color) {
+        setTextColor(color);
+    }
+
+    public void setRightTextColor(int color) {
+        setTextColor(-1, color);
+    }
+
+    public void setTextColor(int... colors) {
+        if (colors.length > 2) {
+            throw new IllegalArgumentException("参数最多两个");
+        }
+        TextView[] textViews = {mLeftText, mRightText};
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i] != -1)
+                textViews[i].setTextColor(colors[i]);
+        }
+    }
+
+    public void setLeftIconColorFilter(int color) {
+        setIconColorFilter(color);
+    }
+
+    public void setRightIconColorFilter(int color) {
+        setIconColorFilter(-1, color);
+    }
+
+    public void setIconColorFilter(int... colors) {
+        if (colors.length > 2) {
+            throw new IllegalArgumentException("参数最多两个");
+        }
+        ImageView[] views = {mLeftImg, mRightImg};
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i] != -1)
+                views[i].setColorFilter(colors[i]);
+        }
+    }
+
     public void setLeftIcon(int id) {
         setIcon(id);
     }
@@ -209,6 +253,25 @@ public class DDActionBar extends BaseActionBar {
         for (int i = 0; i < id.length; i++) {
             if (id[i] != -1)
                 views[i].setImageResource(id[i]);
+        }
+    }
+
+    public void setLeftTextSize(float size) {
+        setTextSize(size);
+    }
+
+    public void setRightTextSize(float size) {
+        setTextSize(-1, size);
+    }
+
+    public void setTextSize(float... size) {
+        if (size.length > 2) {
+            throw new IllegalArgumentException("参数最多两个");
+        }
+        TextView[] textViews = {mLeftText, mRightText};
+        for (int i = 0; i < size.length; i++) {
+            if (size[i] != -1)
+                textViews[i].setTextSize(size[i]);
         }
     }
 

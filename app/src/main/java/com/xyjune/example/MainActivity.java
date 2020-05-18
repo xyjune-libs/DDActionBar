@@ -1,17 +1,18 @@
 package com.xyjune.example;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
-import com.xyjune.ddactionbar.BaseActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.xyjune.ddactionbar.DDActionBar;
 
 public class MainActivity extends AppCompatActivity {
 
     private DDActionBar mDDActionBar;
+
+    private static final int[] colors = {Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.CYAN};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +22,17 @@ public class MainActivity extends AppCompatActivity {
         mDDActionBar.setActionBarListener(new DDActionBar.ActionBarListener() {
             @Override
             public void onLeftClick(View v) {
-                Toast.makeText(MainActivity.this, "click left", Toast.LENGTH_SHORT).show();
+                mDDActionBar.setRightTextColor(colors[random()]);
             }
 
             @Override
             public void onRightClick(View v) {
-                Toast.makeText(MainActivity.this, "click right", Toast.LENGTH_SHORT).show();
+                mDDActionBar.setLeftIconColorFilter(colors[random()]);
             }
         });
+    }
+
+    private int random() {
+        return (int) (Math.random() * colors.length);
     }
 }
