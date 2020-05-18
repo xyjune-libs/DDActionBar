@@ -275,6 +275,20 @@ public class DDActionBar extends BaseActionBar {
         }
     }
 
+    public void setLeftIconSize(int width, int height) {
+        ViewGroup.LayoutParams layoutParams = mLeftImg.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        mLeftImg.setLayoutParams(layoutParams);
+    }
+
+    public void setRightIconSize(int width, int height) {
+        ViewGroup.LayoutParams layoutParams = mRightImg.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        mRightImg.setLayoutParams(layoutParams);
+    }
+
     public void setMode(int mode) {
         if ((mode & LEFT_TEXT) == LEFT_TEXT) {
             setLeftMode(0);
