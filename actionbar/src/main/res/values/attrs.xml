@@ -20,6 +20,7 @@
             <enum name="center" value="1" />
             <enum name="left" value="2" />
         </attr>
+        <attr name="titleStatusBarInclude" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="DDActionBar">

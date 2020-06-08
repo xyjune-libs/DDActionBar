@@ -35,10 +35,15 @@ public class BaseActionBar extends RelativeLayout {
 
     public BaseActionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        int padding = dip2px(context, 15);
-        setPadding(padding, 0, padding, 0);
+        int paddingStartAndEnd = dip2px(context, 15);
+        int paddingTop = 0;
         initTitle();
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.BaseActionBar);
+        boolean includeStatusBar = typedArray.getBoolean(R.styleable.BaseActionBar_titleStatusBarInclude, false);
+        if (includeStatusBar) {
+            paddingTop = getStatusBarHeight(context);
+        }
+        setPadding(paddingStartAndEnd, paddingTop, paddingStartAndEnd, 0);
         String title = typedArray.getString(R.styleable.BaseActionBar_titleText);
         setTitle(title);
         int size = typedArray.getDimensionPixelSize(R.styleable.BaseActionBar_titleSize, sp2px(context, 16));
@@ -99,5 +104,15 @@ public class BaseActionBar extends RelativeLayout {
     protected int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+    //获取状态栏高度
+    private static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
