@@ -1,5 +1,6 @@
 package com.xyjune.ddactionbar;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -7,7 +8,9 @@ import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,7 +20,7 @@ import androidx.annotation.Nullable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class BaseActionBar extends RelativeLayout {
+public class BaseActionBar extends LinearLayout {
 
     public static final int CENTER = 1;
     public static final int LEFT = 2;
@@ -27,7 +30,9 @@ public class BaseActionBar extends RelativeLayout {
     public @interface TitleGravity {
     }
 
+    private RelativeLayout mRelativeLayout;
     private TextView mTitle;
+    private boolean includeStatus;
 
     public BaseActionBar(Context context) {
         this(context, null);
@@ -35,15 +40,13 @@ public class BaseActionBar extends RelativeLayout {
 
     public BaseActionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        setOrientation(VERTICAL);
         int paddingStartAndEnd = dip2px(context, 15);
-        int paddingTop = 0;
+        initRelativeLayout();
         initTitle();
+        setPadding(paddingStartAndEnd, 0, paddingStartAndEnd, 0);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.BaseActionBar);
-        boolean includeStatusBar = typedArray.getBoolean(R.styleable.BaseActionBar_titleStatusBarInclude, false);
-        if (includeStatusBar) {
-            paddingTop = getStatusBarHeight(context);
-        }
-        setPadding(paddingStartAndEnd, paddingTop, paddingStartAndEnd, 0);
+        includeStatus = typedArray.getBoolean(R.styleable.BaseActionBar_titleStatusBarInclude, false);
         String title = typedArray.getString(R.styleable.BaseActionBar_titleText);
         setTitle(title);
         int size = typedArray.getDimensionPixelSize(R.styleable.BaseActionBar_titleSize, sp2px(context, 16));
@@ -55,18 +58,53 @@ public class BaseActionBar extends RelativeLayout {
         typedArray.recycle();
     }
 
+    @SuppressLint("DrawAllocation")
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (includeStatus) {
+            int statusBarHeight = getStatusBarHeight(getContext());
+            int originalHeight = getMeasuredHeight();
+            View view = new View(getContext());
+            super.addView(view, 0, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight));
+            LayoutParams layoutParams = (LayoutParams) getLayoutParams();
+            layoutParams.height = statusBarHeight + originalHeight;
+            setLayoutParams(layoutParams);
+        }
+    }
+
+    private void addStatusBarHeight() {
+        View view = new View(getContext());
+
+    }
+
+    private void initRelativeLayout() {
+        mRelativeLayout = new RelativeLayout(getContext());
+        super.addView(mRelativeLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    @Override
+    public void addView(View child) {
+        mRelativeLayout.addView(child);
+    }
+
+    @Override
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        mRelativeLayout.addView(child, params);
+    }
+
     private void initTitle() {
         mTitle = new TextView(getContext());
         mTitle.setSingleLine();
         mTitle.setEllipsize(TextUtils.TruncateAt.END);
         mTitle.setMaxEms(10);
         mTitle.setTypeface(Typeface.DEFAULT_BOLD);
-        addView(mTitle, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mRelativeLayout.addView(mTitle, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override
     public void setGravity(@TitleGravity int gravity) {
-        LayoutParams layoutParams = (LayoutParams) mTitle.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTitle.getLayoutParams();
         switch (gravity) {
             case CENTER:
                 layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);

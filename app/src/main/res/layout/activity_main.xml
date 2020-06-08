@@ -13,6 +13,7 @@
         android:background="@android:color/white"
         app:titleGravity="left"
         app:titleSize="18sp"
+        app:titleStatusBarInclude="true"
         app:titleText="BaseActionBar" />
 
     <com.xyjune.ddactionbar.BaseActionBar

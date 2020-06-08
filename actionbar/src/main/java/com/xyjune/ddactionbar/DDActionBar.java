@@ -116,7 +116,7 @@ public class DDActionBar extends BaseActionBar {
         mRightView.setGravity(Gravity.CENTER);
         int padding = dip2px(getContext(), 5);
         mRightView.setPadding(padding, 0, padding, 0);
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
         addView(mRightView, layoutParams);
         mRightView.setOnClickListener(new OnClickListener() {
@@ -147,7 +147,7 @@ public class DDActionBar extends BaseActionBar {
         mLeftView.setGravity(Gravity.CENTER);
         int padding = dip2px(getContext(), 5);
         mLeftView.setPadding(padding, 0, padding, 0);
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
         addView(mLeftView, 0, layoutParams);
         mLeftView.setOnClickListener(new OnClickListener() {
