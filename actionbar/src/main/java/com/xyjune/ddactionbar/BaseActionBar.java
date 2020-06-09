@@ -1,6 +1,5 @@
 package com.xyjune.ddactionbar;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -22,6 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 
 public class BaseActionBar extends LinearLayout {
 
+    private static final String TAG = "BaseActionBar";
+
     public static final int CENTER = 1;
     public static final int LEFT = 2;
 
@@ -40,13 +41,11 @@ public class BaseActionBar extends LinearLayout {
 
     public BaseActionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setOrientation(VERTICAL);
         int paddingStartAndEnd = dip2px(context, 15);
-        initRelativeLayout();
         initTitle();
-        setPadding(paddingStartAndEnd, 0, paddingStartAndEnd, 0);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.BaseActionBar);
         includeStatus = typedArray.getBoolean(R.styleable.BaseActionBar_titleStatusBarInclude, false);
+        setPadding(paddingStartAndEnd, includeStatus ? getStatusBarHeight(getContext()) : 0, paddingStartAndEnd, 0);
         String title = typedArray.getString(R.styleable.BaseActionBar_titleText);
         setTitle(title);
         int size = typedArray.getDimensionPixelSize(R.styleable.BaseActionBar_titleSize, sp2px(context, 16));
@@ -58,48 +57,50 @@ public class BaseActionBar extends LinearLayout {
         typedArray.recycle();
     }
 
-    @SuppressLint("DrawAllocation")
+    private void addStatusBarHeight(int height) {
+        View view = new View(getContext());
+        super.addView(view, 0, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (includeStatus) {
-            int statusBarHeight = getStatusBarHeight(getContext());
             int originalHeight = getMeasuredHeight();
-            View view = new View(getContext());
-            super.addView(view, 0, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight));
-            LayoutParams layoutParams = (LayoutParams) getLayoutParams();
-            layoutParams.height = statusBarHeight + originalHeight;
-            setLayoutParams(layoutParams);
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mRelativeLayout.getLayoutParams();
+            layoutParams.height = originalHeight;
+            mRelativeLayout.setLayoutParams(layoutParams);
+            setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight() + getStatusBarHeight(getContext()));
         }
     }
 
-    private void addStatusBarHeight() {
-        View view = new View(getContext());
-
-    }
-
-    private void initRelativeLayout() {
-        mRelativeLayout = new RelativeLayout(getContext());
-        super.addView(mRelativeLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
-
-    @Override
-    public void addView(View child) {
-        mRelativeLayout.addView(child);
-    }
-
-    @Override
-    public void addView(View child, ViewGroup.LayoutParams params) {
-        mRelativeLayout.addView(child, params);
-    }
-
     private void initTitle() {
+        mRelativeLayout = new RelativeLayout(getContext());
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mRelativeLayout.setLayoutParams(layoutParams);
         mTitle = new TextView(getContext());
         mTitle.setSingleLine();
         mTitle.setEllipsize(TextUtils.TruncateAt.END);
         mTitle.setMaxEms(10);
         mTitle.setTypeface(Typeface.DEFAULT_BOLD);
         mRelativeLayout.addView(mTitle, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        addView(mRelativeLayout);
+    }
+
+    public void addTitleView(View child, int index) {
+        mRelativeLayout.addView(child, index);
+    }
+
+    public void addTitleView(View child, int index, ViewGroup.LayoutParams params) {
+        mRelativeLayout.addView(child, index, params);
+    }
+
+    public void addTitleView(View child, ViewGroup.LayoutParams params) {
+        mRelativeLayout.addView(child, params);
+    }
+
+    public void addTitleView(View child) {
+        mRelativeLayout.addView(child);
     }
 
     @Override

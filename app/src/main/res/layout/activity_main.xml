@@ -35,6 +35,7 @@
         app:leftText="left"
         app:rightText="right"
         app:titleColor="#00adfa"
+        app:titleStatusBarInclude="true"
         app:titleGravity="center"
         app:titleMode="left_text"
         app:titleSize="18sp"

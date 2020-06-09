@@ -118,7 +118,7 @@ public class DDActionBar extends BaseActionBar {
         mRightView.setPadding(padding, 0, padding, 0);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-        addView(mRightView, layoutParams);
+        addTitleView(mRightView, layoutParams);
         mRightView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,7 +149,7 @@ public class DDActionBar extends BaseActionBar {
         mLeftView.setPadding(padding, 0, padding, 0);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-        addView(mLeftView, 0, layoutParams);
+        addTitleView(mLeftView, 0, layoutParams);
         mLeftView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
